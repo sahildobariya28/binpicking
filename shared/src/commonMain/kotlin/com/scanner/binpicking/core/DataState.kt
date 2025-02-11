@@ -2,20 +2,22 @@ package com.scanner.binpicking.core
 
 import io.ktor.http.HttpStatusCode
 
-data class ListDataState(
-    val isLoading: Boolean = false,
-    val data: List<Any>? = null,
-    val status: HttpStatusCode = HttpStatusCode.Processing
+
+
+data class DataState(
+    val state: DataConfiguration = DataConfiguration.onIdle,
+    val errorResponse: Any? = null,
+    val successResponse: Any? = null,
+    val responseStatus: HttpStatusCode = HttpStatusCode.Processing
 )
 
-data class SingleDataState(
-    val isLoading: Boolean = false,
-    val data: Any? = null,
-    val status: HttpStatusCode = HttpStatusCode.Processing
-)
+sealed class DataConfiguration {
+    data object OnIdle : DataConfiguration()
+    data object OnLoading : DataConfiguration()
+    data object OnSuccess : DataConfiguration()
+    data object OnError : DataConfiguration()
 
-//data class BrandState(
-//    val isLoading: Boolean = false,
-//    val data: List<Any>? = null,
-//    val status: HttpStatusCode = HttpStatusCode.Processing
-//)
+    companion object {
+        val onIdle: DataConfiguration = OnIdle
+    }
+}

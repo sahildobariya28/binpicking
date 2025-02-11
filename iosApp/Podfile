@@ -1,5 +1,12 @@
-target 'iosApp' do
+target 'PLCDP - Picking' do
   use_frameworks!
-  platform :ios, '14.1'
+  platform :ios, '16.0'
   pod 'shared', :path => '../shared'
+  
+  pod 'FirebaseAnalytics'
+  pod 'FirebaseCrashlytics'
+  
+#  pod 'Firebase/Crashlytics'
+#  pod 'Firebase/Analytics'
+#  pod 'Clarity'
 end

@@ -1,102 +1,56 @@
+import UIKit
 import SwiftUI
 import shared
-import AVFoundation
-import CoreBluetooth
+import Network
 
+class NetworkMonitor: ObservableObject {
+    private let monitor = NWPathMonitor()
+    private let queue = DispatchQueue (label: "Monitor")
+    @Published var isActive = true
+    @Published var isExpensive = true
+    @Published var isConstrained = true
+    @Published var connectionType = NWInterface.InterfaceType.other
 
-class ContainerViewController: UIViewController {
-    private let onTouchDown: (CGPoint) -> Void
-    
+    init() {
+        monitor.pathUpdateHandler = { path in
+            DispatchQueue.main.async {
+                self.isActive = path.status == .satisfied
+                self.isExpensive = path.isExpensive
+                self.isConstrained = path.isConstrained
 
-    init(child: UIViewController, onTouchDown: @escaping (CGPoint) -> Void) {
-        self.onTouchDown = onTouchDown
-        super.init(nibName: nil, bundle: nil)
-        addChild(child)
-        child.view.frame = view.frame
-        view.addSubview(child.view)
-        child.didMove(toParent: self)
-
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        if let startPoint = touches.first?.location(in: nil) {
-            onTouchDown(startPoint)
+                let connectionTypes: [NWInterface.InterfaceType] = [.cellular, .wifi, .wiredEthernet]
+                self.connectionType = connectionTypes.first(where: path.usesInterfaceType) ?? .other
+            }
         }
+        monitor.start(queue: queue)
     }
 }
 
-struct SwipeGestureViewController: UIViewControllerRepresentable {
-    var onSwipe: () -> Void
-    var player: AVAudioPlayer!
+struct ComposeView: UIViewControllerRepresentable {
+    @StateObject var networkMonitor = NetworkMonitor()
+
     func makeUIViewController(context: Context) -> UIViewController {
-
-
 
         let kmmObject = NSObject()
         let pref = KMMPreference(context: kmmObject)
-        let viewController = ApplicationKt.Main(pref: pref)
-        let containerController = ContainerViewController(child: viewController) {
-            context.coordinator.startPoint = $0
-        }
-
-        let swipeGestureRecognizer = UISwipeGestureRecognizer(
-            target:
-                context.coordinator, action: #selector(Coordinator.handleSwipe)
-        )
-        swipeGestureRecognizer.direction = .right
-        swipeGestureRecognizer.numberOfTouchesRequired = 1
-        containerController.view.addGestureRecognizer(swipeGestureRecognizer)
-        
-
-        return containerController
+        return MainViewControllerKt.MainViewController(browserWrapper: BrowserWrapper(), context: pref)
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(onSwipe: onSwipe)
-    }
-    
-
-    class Coordinator: NSObject, UIGestureRecognizerDelegate {
-        var onSwipe: () -> Void
-        var startPoint: CGPoint? = nil
-
-
-        init(onSwipe: @escaping () -> Void) {
-            self.onSwipe = onSwipe
-        }
-
-        
-        @objc func handleSwipe(_ gesture: UISwipeGestureRecognizer) {
-            
-            if gesture.state == .ended, let startPoint = startPoint, startPoint.x < 5  {
-                print("Start point x-: \(startPoint.x)")
-                onSwipe()
-            }
-        }
-
-        func gestureRecognizer(_gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-            true
-        }
-    
-    }
 }
 
 struct ContentView: View {
+
+    @StateObject var networkMonitor = NetworkMonitor()
     var body: some View {
-        VStack {
-            
-            SwipeGestureViewController {
-                onBackGesture()
-            }
-        }.ignoresSafeArea(.all)
-        
+        ComposeView()
+                .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
+                .alert(isPresented: .constant(!networkMonitor.isActive)) {
+                    Alert(
+                        title: Text("No Internet"),
+                        message: Text("Please check your internet connection and try again."),
+                        dismissButton: .default(Text("OK"))
+                    )
+                }
     }
-    
 }

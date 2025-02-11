@@ -1,9 +1,11 @@
 package com.scanner.binpicking.presentation.component
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
@@ -16,19 +18,22 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.scanner.binpicking.resoures.Colors
-import com.scanner.binpicking.resoures.icons.Hidepassword
-import com.scanner.binpicking.resoures.icons.MyIconPack
-import com.scanner.binpicking.resoures.icons.Showpassword
+import binpicking.shared.generated.resources.Res
+import binpicking.shared.generated.resources.btn_hide_password
+import binpicking.shared.generated.resources.btn_show_password
+import com.scanner.binpicking.theme.Colors
+import com.scanner.binpicking.theme.Colors.LightOnPrimary
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
-inline fun SimpleTextField(hint: String, text: String, crossinline onValueChange: (String) -> Unit) {
+fun SimpleTextField(hint: String, text: String, imageVector: ImageVector = Icons.Default.Email, onValueChange: (String) -> Unit) {
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
@@ -42,20 +47,20 @@ inline fun SimpleTextField(hint: String, text: String, crossinline onValueChange
         leadingIcon = {
             Icon(
                 modifier = Modifier.padding(start = 8.dp),
-                imageVector = Icons.Default.Email,
-                contentDescription = null
+                imageVector = imageVector,
+                contentDescription = "Text Field"
             )
         },
         textStyle = TextStyle(fontSize = 14.sp),
         shape = RoundedCornerShape(50.dp),
         label = { Text(hint, fontSize = 14.sp) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            textColor = Colors.text_theme,
-            focusedBorderColor = Colors.text_theme,
-            unfocusedBorderColor = Colors.text_field_bg_color,
-            cursorColor = Colors.text_theme,
-            backgroundColor = Colors.text_field_bg_color,
-            focusedLabelColor = Colors.text_theme
+            textColor = LightOnPrimary,
+            focusedBorderColor = LightOnPrimary,
+            unfocusedBorderColor = Colors.TextFieldBg,
+            cursorColor = LightOnPrimary,
+            backgroundColor = Colors.TextFieldBg,
+            focusedLabelColor = LightOnPrimary
         ),
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Text
@@ -64,8 +69,7 @@ inline fun SimpleTextField(hint: String, text: String, crossinline onValueChange
 }
 
 @Composable
-inline fun PasswordTextField(hint: String, text: String = "", isPasswordToggle: Boolean, crossinline onTextChange: (String) -> Unit, crossinline onPasswordToggleChange: (Boolean) -> Unit) {
-
+fun PasswordTextField(hint: String, text: String = "", isPasswordToggle: Boolean, onTextChange: (String) -> Unit, onPasswordToggleChange: (Boolean) -> Unit) {
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
@@ -80,27 +84,28 @@ inline fun PasswordTextField(hint: String, text: String = "", isPasswordToggle: 
             Icon(
                 modifier = Modifier.padding(start = 8.dp),
                 imageVector = Icons.Default.Lock,
-                contentDescription = null
+                contentDescription = "Lock"
             )
         },
+
         trailingIcon = {
-            val icon = if (isPasswordToggle) {
-                MyIconPack.Hidepassword
-            } else {
-                MyIconPack.Showpassword
+            val icon = if(isPasswordToggle){
+                painterResource(Res.drawable.btn_hide_password)
+            }else{
+                painterResource(Res.drawable.btn_show_password)
             }
             Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .clip(RoundedCornerShape(50.dp))
+                painter = icon,
+                contentDescription = "Password Hide",
+                modifier = Modifier.fillMaxHeight()
+                    .clip(CircleShape)
                     .clickable {
                         onPasswordToggleChange(!isPasswordToggle)
                     }
+                    .padding(17.dp)
             )
         },
-        textStyle = TextStyle(fontSize = 14.sp,),
+        textStyle = TextStyle(fontSize = 14.sp),
         visualTransformation = if (isPasswordToggle) {
             VisualTransformation.None
         } else {
@@ -112,12 +117,12 @@ inline fun PasswordTextField(hint: String, text: String = "", isPasswordToggle: 
         shape = RoundedCornerShape(50.dp),
         label = { Text(hint, fontSize = 14.sp) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            textColor = Colors.text_theme,
-            focusedBorderColor = Colors.text_theme,
-            unfocusedBorderColor = Colors.text_field_bg_color,
-            cursorColor = Colors.text_theme,
-            backgroundColor = Colors.text_field_bg_color,
-            focusedLabelColor = Colors.text_theme
+            textColor = LightOnPrimary,
+            focusedBorderColor = LightOnPrimary,
+            unfocusedBorderColor = Colors.TextFieldBg,
+            cursorColor = LightOnPrimary,
+            backgroundColor = Colors.TextFieldBg,
+            focusedLabelColor = LightOnPrimary
         )
     )
 }

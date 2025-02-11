@@ -13,37 +13,42 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import com.scanner.binpicking.applicationContext
 import com.scanner.binpicking.bottomSafeArea
-import com.scanner.binpicking.resoures.Colors
-import com.scanner.binpicking.resoures.icons.Logobiglight
-import com.scanner.binpicking.resoures.icons.MyIconPack
+import com.scanner.binpicking.theme.Colors.LightPrimary
 import com.scanner.binpicking.topSafeArea
 import kotlinx.coroutines.delay
-import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import binpicking.shared.generated.resources.Res
+import binpicking.shared.generated.resources.img_logo_horizontal
+import com.scanner.binpicking.core.AppConfig
 
 
 @Composable
-inline fun SplashScreen(crossinline signInRoute: () -> Unit) {
+fun SplashScreen(viewModel: SplashViewModel) {
     Surface {
         Box(
             modifier = Modifier.fillMaxSize()
-                .background(Colors.theme)
+                .background(LightPrimary)
                 .padding(top = topSafeArea.dp, bottom = bottomSafeArea.dp),
             contentAlignment = Alignment.Center
         ) {
 
-//            ImageLoader("images/logo.png").value?.let {
-                Image(
-                    modifier = Modifier.fillMaxWidth(.6f),
-                    imageVector = MyIconPack.Logobiglight,
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit
-                )
-//            }
+            Image(
+                modifier = Modifier.fillMaxWidth(.6f),
+                painter = painterResource(Res.drawable.img_logo_horizontal),
+                contentDescription = "Horizontal Logo",
+                contentScale = ContentScale.Fit
+            )
         }
         LaunchedEffect(true) {
             delay(3000)
-            signInRoute()
+
+            if (AppConfig.getToken().isNullOrEmpty()){
+                viewModel.onNavigateToAuthScreen()
+            }else{
+                viewModel.onNavigateToMainScreen()
+            }
         }
     }
 }

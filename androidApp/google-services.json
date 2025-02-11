@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "66768696883",
+    "project_id": "binpicking-dba88",
+    "storage_bucket": "binpicking-dba88.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:66768696883:android:0964f474ecca719d221546",
+        "android_client_info": {
+          "package_name": "com.scanner.binpicking"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZeFyO2Hr5z_qvNMLJM9m4zu1A6VLprm0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

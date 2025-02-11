@@ -1,6 +1,6 @@
 {
   "name": "shared",
-  "version": "1.1",
+  "version": "1.0",
   "homepage": "Link to the Shared Module homepage",
   "source": {
     "http": ""
@@ -11,7 +11,7 @@
   "vendored_frameworks": "build/cocoapods/framework/shared.framework",
   "libraries": "c++",
   "platforms": {
-    "ios": "14.1"
+    "ios": "16.0"
   },
   "pod_target_xcconfig": {
     "KOTLIN_PROJECT_PATH": ":shared",
@@ -26,7 +26,6 @@
     }
   ],
   "resources": [
-    "src/commonMain/resources/**",
-    "src/iosMain/resources/**"
+    "build/compose/cocoapods/compose-resources"
   ]
 }
