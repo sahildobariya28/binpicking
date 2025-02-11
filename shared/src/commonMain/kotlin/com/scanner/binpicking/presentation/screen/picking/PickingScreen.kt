@@ -46,7 +46,7 @@ fun NewPickingScreen(viewModel: PickingViewModel) {
             .fillMaxSize()
             .background(LightBackground)
     ) {
-        AppBar(version = "5.5", onBackPress = {
+        AppBar(version = "5.7", onBackPress = {
             AppConfig.getPickerId()?.let { pickerId ->
                 viewModel.updateStatus(pickerId.toInt())
             }
